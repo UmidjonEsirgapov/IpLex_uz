@@ -24,7 +24,7 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="ru" data-theme="dark" className={`${outfit.variable} ${plusJakartaSans.variable}`}>
+    <html lang="ru" data-theme="light" className={`${outfit.variable} ${plusJakartaSans.variable}`}>
       <body style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
         <Header />
         <div style={{ flex: '1 0 auto' }}>
