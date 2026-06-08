@@ -1,5 +1,6 @@
 import { getAllPosts, getPopularTagsInCategory } from '@/lib/posts';
 import { getCategoryHub } from '@/lib/categories';
+import { resolveCategory, slugifyPathSegment } from '@/lib/urlSlugs';
 import Link from 'next/link';
 import Breadcrumb from '@/components/Breadcrumb';
 import PostCard from '@/components/PostCard';
@@ -9,7 +10,7 @@ export async function generateStaticParams() {
   const categories = new Set();
   posts.forEach(post => {
     if (post.categories) {
-      post.categories.forEach(c => categories.add(c));
+      post.categories.forEach(c => categories.add(c.toLowerCase()));
     }
   });
 
@@ -20,13 +21,14 @@ export async function generateStaticParams() {
 
 export async function generateMetadata({ params }) {
   const { category } = await params;
-  const decodedCategory = decodeURIComponent(category);
+  const decodedCategory = resolveCategory(category);
   const hub = getCategoryHub(decodedCategory);
   return {
     title: decodedCategory,
     description: hub.description.substring(0, 160),
+    robots: { index: true, follow: true },
     alternates: {
-      canonical: `/categories/${encodeURIComponent(decodedCategory)}`,
+      canonical: `/categories/${slugifyPathSegment(decodedCategory)}`,
     },
     openGraph: {
       title: `${decodedCategory} — статьи об образовании`,
@@ -37,7 +39,7 @@ export async function generateMetadata({ params }) {
 
 export default async function CategoryPage({ params }) {
   const { category } = await params;
-  const decodedCategory = decodeURIComponent(category);
+  const decodedCategory = resolveCategory(category);
   const allPosts = getAllPosts();
   const hub = getCategoryHub(decodedCategory);
 
@@ -73,7 +75,7 @@ export default async function CategoryPage({ params }) {
             {hub.related.map(related => (
               <Link
                 key={related}
-                href={`/categories/${encodeURIComponent(related)}`}
+                href={`/categories/${slugifyPathSegment(related)}`}
                 className="category-chip"
               >
                 {related}
@@ -90,7 +92,7 @@ export default async function CategoryPage({ params }) {
             {popularTags.map(({ tag, count }) => (
               <Link
                 key={tag}
-                href={`/tags/${encodeURIComponent(tag)}`}
+                href={`/tags/${slugifyPathSegment(tag)}`}
                 className="tag-badge"
               >
                 #{tag} ({count})

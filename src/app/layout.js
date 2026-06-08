@@ -1,6 +1,7 @@
 import './globals.css';
 import Header from '@/components/Header';
 import Link from 'next/link';
+import { slugifyPathSegment } from '@/lib/urlSlugs';
 import { Outfit, Plus_Jakarta_Sans } from 'next/font/google';
 
 const outfit = Outfit({
@@ -30,7 +31,6 @@ export const metadata = {
     googleBot: { index: true, follow: true },
   },
   alternates: {
-    canonical: '/',
     types: {
       'text/plain': [{ url: '/llms.txt', title: 'LLM Site Information' }],
     },
@@ -63,16 +63,16 @@ export default function RootLayout({ children }) {
               <h4 className="footer-title">Разделы и Категории</h4>
               <div className="footer-grid">
                 <Link href="/">Все статьи</Link>
-                <Link href={`/categories/${encodeURIComponent('Новости')}`}>Новости</Link>
-                <Link href={`/categories/${encodeURIComponent('Абитуриент')}`}>Абитуриент</Link>
-                <Link href={`/categories/${encodeURIComponent('Студент')}`}>Студент</Link>
-                <Link href={`/categories/${encodeURIComponent('Полезное')}`}>Полезное</Link>
-                <Link href={`/categories/${encodeURIComponent('Вузы')}`}>Вузы</Link>
-                <Link href={`/categories/${encodeURIComponent('Школа')}`}>Школа</Link>
-                <Link href={`/categories/${encodeURIComponent('Мировое образование')}`}>Мировое образование</Link>
-                <Link href={`/categories/${encodeURIComponent('Наука')}`}>Наука</Link>
-                <Link href={`/categories/${encodeURIComponent('Аттестация')}`}>Аттестация</Link>
-                <Link href={`/categories/${encodeURIComponent('Национальный сертификат')}`}>Нац. сертификат</Link>
+                <Link href={`/categories/${slugifyPathSegment('Новости')}`}>Новости</Link>
+                <Link href={`/categories/${slugifyPathSegment('Абитуриент')}`}>Абитуриент</Link>
+                <Link href={`/categories/${slugifyPathSegment('Студент')}`}>Студент</Link>
+                <Link href={`/categories/${slugifyPathSegment('Полезное')}`}>Полезное</Link>
+                <Link href={`/categories/${slugifyPathSegment('Вузы')}`}>Вузы</Link>
+                <Link href={`/categories/${slugifyPathSegment('Школа')}`}>Школа</Link>
+                <Link href={`/categories/${slugifyPathSegment('Мировое образование')}`}>Мировое образование</Link>
+                <Link href={`/categories/${slugifyPathSegment('Наука')}`}>Наука</Link>
+                <Link href={`/categories/${slugifyPathSegment('Аттестация')}`}>Аттестация</Link>
+                <Link href={`/categories/${slugifyPathSegment('Национальный сертификат')}`}>Нац. сертификат</Link>
                 <Link href="/tags">Все теги</Link>
               </div>
             </div>

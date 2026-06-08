@@ -2,16 +2,17 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { slugifyPathSegment } from '@/lib/urlSlugs';
 
 const navCategories = [
   { label: 'Статьи', href: '/' },
-  { label: 'Новости', href: `/categories/${encodeURIComponent('Новости')}` },
-  { label: 'Абитуриент', href: `/categories/${encodeURIComponent('Абитуриент')}` },
-  { label: 'Студент', href: `/categories/${encodeURIComponent('Студент')}` },
-  { label: 'Вузы', href: `/categories/${encodeURIComponent('Вузы')}` },
-  { label: 'Школа', href: `/categories/${encodeURIComponent('Школа')}` },
-  { label: 'Полезное', href: `/categories/${encodeURIComponent('Полезное')}` },
-  { label: 'Нац. сертификат', href: `/categories/${encodeURIComponent('Национальный сертификат')}` },
+  { label: 'Новости', href: `/categories/${slugifyPathSegment('Новости')}` },
+  { label: 'Абитуриент', href: `/categories/${slugifyPathSegment('Абитуриент')}` },
+  { label: 'Студент', href: `/categories/${slugifyPathSegment('Студент')}` },
+  { label: 'Вузы', href: `/categories/${slugifyPathSegment('Вузы')}` },
+  { label: 'Школа', href: `/categories/${slugifyPathSegment('Школа')}` },
+  { label: 'Полезное', href: `/categories/${slugifyPathSegment('Полезное')}` },
+  { label: 'Нац. сертификат', href: `/categories/${slugifyPathSegment('Национальный сертификат')}` },
   { label: 'Теги', href: '/tags' },
 ];
 

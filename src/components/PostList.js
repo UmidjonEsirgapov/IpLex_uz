@@ -4,6 +4,7 @@ import { useState, useMemo } from 'react';
 import Link from 'next/link';
 import PostCard from '@/components/PostCard';
 import { allCategories } from '@/lib/categories';
+import { slugifyPathSegment } from '@/lib/urlSlugs';
 
 export default function PostList({ initialPosts }) {
   const [searchQuery, setSearchQuery] = useState('');
@@ -61,7 +62,7 @@ export default function PostList({ initialPosts }) {
           {allCategories.map(category => (
             <Link
               key={category}
-              href={`/categories/${encodeURIComponent(category)}`}
+              href={`/categories/${slugifyPathSegment(category)}`}
               className="category-chip"
             >
               {category}

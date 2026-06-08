@@ -1,45 +1,38 @@
-import { getAllPosts } from '@/lib/posts';
+import { getAllPosts, getUniqueTagSlugs } from '@/lib/posts';
+import { tagMatchesSlug, resolveTagName, slugifyPathSegment } from '@/lib/urlSlugs';
 import Link from 'next/link';
 import Breadcrumb from '@/components/Breadcrumb';
 import PostCard from '@/components/PostCard';
 
 export async function generateStaticParams() {
-  const posts = getAllPosts();
-  const tags = new Set();
-  posts.forEach(post => {
-    if (post.tags) {
-      post.tags.forEach(t => tags.add(t));
-    }
-  });
-
-  return Array.from(tags).map(tag => ({
-    tag: tag,
-  }));
+  return getUniqueTagSlugs().map(tag => ({ tag }));
 }
 
 export async function generateMetadata({ params }) {
   const { tag } = await params;
-  const decodedTag = decodeURIComponent(tag);
+  const allPosts = getAllPosts();
+  const displayTag = resolveTagName(tag, allPosts);
   return {
-    title: `#${decodedTag}`,
-    description: `Все статьи с тегом #${decodedTag} на образовательном портале ИпЛекс.`,
+    title: `#${displayTag}`,
+    description: `Все статьи с тегом #${displayTag} на образовательном портале ИпЛекс.`,
+    robots: { index: true, follow: true },
     alternates: {
-      canonical: `/tags/${encodeURIComponent(decodedTag)}`,
+      canonical: `/tags/${slugifyPathSegment(displayTag)}`,
     },
     openGraph: {
-      title: `#${decodedTag} — публикации`,
-      description: `Все статьи с тегом #${decodedTag} на образовательном портале ИпЛекс.`,
+      title: `#${displayTag} — публикации`,
+      description: `Все статьи с тегом #${displayTag} на образовательном портале ИпЛекс.`,
     },
   };
 }
 
 export default async function TagPage({ params }) {
   const { tag } = await params;
-  const decodedTag = decodeURIComponent(tag);
   const allPosts = getAllPosts();
+  const displayTag = resolveTagName(tag, allPosts);
 
   const filteredPosts = allPosts.filter(post =>
-    post.tags && post.tags.includes(decodedTag)
+    post.tags && post.tags.some(t => tagMatchesSlug(t, tag))
   );
 
   return (
@@ -48,13 +41,13 @@ export default async function TagPage({ params }) {
         items={[
           { label: 'Главная', href: '/' },
           { label: 'Теги', href: '/tags' },
-          { label: `#${decodedTag}` },
+          { label: `#${displayTag}` },
         ]}
       />
 
       <header className="hub-header">
         <h1 className="hub-title">
-          Тег: <span style={{ color: 'var(--primary)' }}>#{decodedTag}</span>
+          Тег: <span style={{ color: 'var(--primary)' }}>#{displayTag}</span>
         </h1>
         <p className="hub-count">
           Найдено публикаций: {filteredPosts.length}

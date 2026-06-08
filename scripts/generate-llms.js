@@ -131,7 +131,8 @@ function main() {
 `;
 
   categoriesList.forEach(cat => {
-    llmsContent += `- [${cat.name}](${baseUrl}${cat.path}): ${cat.desc}\n`;
+    const path = `/categories/${encodeURIComponent(cat.name.toLowerCase())}`;
+    llmsContent += `- [${cat.name}](${baseUrl}${path}): ${cat.desc}\n`;
   });
 
   llmsContent += `- [Все теги](${baseUrl}/tags): Полный индекс тем и ключевых слов портала с количеством статей.\n`;

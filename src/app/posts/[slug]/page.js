@@ -4,6 +4,7 @@ import { Marked } from 'marked';
 import Link from 'next/link';
 import Breadcrumb from '@/components/Breadcrumb';
 import PostCard from '@/components/PostCard';
+import { slugifyPathSegment } from '@/lib/urlSlugs';
 
 const marked = new Marked();
 
@@ -63,7 +64,7 @@ export default async function PostPage({ params }) {
   const breadcrumbItems = [
     { label: 'Главная', href: '/' },
     ...(primaryCategory
-      ? [{ label: primaryCategory, href: `/categories/${encodeURIComponent(primaryCategory)}` }]
+      ? [{ label: primaryCategory, href: `/categories/${slugifyPathSegment(primaryCategory)}` }]
       : []),
     { label: post.title },
   ];
@@ -113,7 +114,7 @@ export default async function PostPage({ params }) {
             {post.categories.map(cat => (
               <Link
                 key={cat}
-                href={`/categories/${encodeURIComponent(cat)}`}
+                href={`/categories/${slugifyPathSegment(cat)}`}
                 style={{ color: 'var(--primary)', fontWeight: 600 }}
               >
                 {cat}
@@ -146,7 +147,7 @@ export default async function PostPage({ params }) {
           {post.tags.map(tag => (
             <Link
               key={tag}
-              href={`/tags/${encodeURIComponent(tag)}`}
+              href={`/tags/${slugifyPathSegment(tag)}`}
               className="tag-badge"
             >
               #{tag}
@@ -180,7 +181,7 @@ export default async function PostPage({ params }) {
           <h2 className="related-title">
             Ещё из категории{' '}
             <Link
-              href={`/categories/${encodeURIComponent(primaryCategory)}`}
+              href={`/categories/${slugifyPathSegment(primaryCategory)}`}
               style={{ color: 'var(--primary)' }}
             >
               {primaryCategory}

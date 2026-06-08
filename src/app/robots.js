@@ -5,6 +5,7 @@ export default function robots() {
     rules: {
       userAgent: '*',
       allow: '/',
+      disallow: ['/_next/'],
     },
     sitemap: 'https://iplex.uz/sitemap.xml',
   };

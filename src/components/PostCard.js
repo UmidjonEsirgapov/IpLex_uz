@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import { slugifyPathSegment } from '@/lib/urlSlugs';
 
 export default function PostCard({ post, titleSize }) {
   return (
@@ -30,7 +31,7 @@ export default function PostCard({ post, titleSize }) {
         <div className="card-meta">
           {post.categories && post.categories[0] ? (
             <Link
-              href={`/categories/${encodeURIComponent(post.categories[0])}`}
+                href={`/categories/${slugifyPathSegment(post.categories[0])}`}
               className="card-category card-category-link"
             >
               {post.categories[0]}
@@ -52,7 +53,7 @@ export default function PostCard({ post, titleSize }) {
             {post.tags.slice(0, 3).map((tag) => (
               <Link
                 key={tag}
-                href={`/tags/${encodeURIComponent(tag)}`}
+                href={`/tags/${slugifyPathSegment(tag)}`}
                 className="tag-badge"
               >
                 #{tag}

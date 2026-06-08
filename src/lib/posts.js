@@ -156,16 +156,37 @@ export function getPopularTagsInCategory(posts, limit = 10) {
 export function getTagsWithCounts() {
   const posts = getAllPosts();
   const tagCounts = {};
+  const tagLabels = {};
 
   posts.forEach(post => {
     if (post.tags) {
       post.tags.forEach(tag => {
-        tagCounts[tag] = (tagCounts[tag] || 0) + 1;
+        const key = tag.toLowerCase();
+        tagCounts[key] = (tagCounts[key] || 0) + 1;
+        if (!tagLabels[key]) {
+          tagLabels[key] = {};
+        }
+        tagLabels[key][tag] = (tagLabels[key][tag] || 0) + 1;
       });
     }
   });
 
   return Object.entries(tagCounts)
     .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0], 'ru'))
-    .map(([tag, count]) => ({ tag, count }));
+    .map(([key, count]) => {
+      const variants = tagLabels[key];
+      const tag = Object.entries(variants).sort((a, b) => b[1] - a[1])[0][0];
+      return { tag, count };
+    });
+}
+
+export function getUniqueTagSlugs() {
+  const posts = getAllPosts();
+  const slugs = new Set();
+  posts.forEach(post => {
+    if (post.tags) {
+      post.tags.forEach(tag => slugs.add(tag.toLowerCase()));
+    }
+  });
+  return Array.from(slugs);
 }

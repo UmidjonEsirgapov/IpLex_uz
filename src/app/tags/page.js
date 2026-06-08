@@ -1,4 +1,5 @@
 import { getTagsWithCounts } from '@/lib/posts';
+import { slugifyPathSegment } from '@/lib/urlSlugs';
 import Link from 'next/link';
 import Breadcrumb from '@/components/Breadcrumb';
 
@@ -39,7 +40,7 @@ export default function TagsIndexPage() {
         {tags.map(({ tag, count }) => (
           <Link
             key={tag}
-            href={`/tags/${encodeURIComponent(tag)}`}
+            href={`/tags/${slugifyPathSegment(tag)}`}
             className="tag-index-card"
           >
             <span className="tag-index-name">#{tag}</span>
