@@ -46,6 +46,12 @@ export default async function sitemap() {
       changeFrequency: 'daily',
       priority: 1.0,
     },
+    {
+      url: `${baseUrl}/tags`,
+      lastModified: new Date(),
+      changeFrequency: 'weekly',
+      priority: 0.5,
+    },
     ...postUrls,
     ...categoryUrls,
     ...tagUrls,

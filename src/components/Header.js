@@ -3,6 +3,18 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 
+const navCategories = [
+  { label: 'Статьи', href: '/' },
+  { label: 'Новости', href: `/categories/${encodeURIComponent('Новости')}` },
+  { label: 'Абитуриент', href: `/categories/${encodeURIComponent('Абитуриент')}` },
+  { label: 'Студент', href: `/categories/${encodeURIComponent('Студент')}` },
+  { label: 'Вузы', href: `/categories/${encodeURIComponent('Вузы')}` },
+  { label: 'Школа', href: `/categories/${encodeURIComponent('Школа')}` },
+  { label: 'Полезное', href: `/categories/${encodeURIComponent('Полезное')}` },
+  { label: 'Нац. сертификат', href: `/categories/${encodeURIComponent('Национальный сертификат')}` },
+  { label: 'Теги', href: '/tags' },
+];
+
 export default function Header() {
   const [theme, setTheme] = useState('light');
 
@@ -27,18 +39,17 @@ export default function Header() {
             <span>ИпЛекс</span>
           </Link>
         </div>
-        
-        <nav className="navbar-nav">
-          <Link href="/">Статьи</Link>
-          <Link href={`/categories/${encodeURIComponent('Новости')}`}>Новости</Link>
-          <Link href={`/categories/${encodeURIComponent('Абитуриент')}`}>Абитуриент</Link>
-          <Link href={`/categories/${encodeURIComponent('Студент')}`}>Студент</Link>
+
+        <nav className="navbar-nav" aria-label="Основная навигация">
+          {navCategories.map(({ label, href }) => (
+            <Link key={href} href={href}>{label}</Link>
+          ))}
         </nav>
-        
+
         <div className="navbar-actions">
-          <button 
-            onClick={toggleTheme} 
-            className="theme-toggle" 
+          <button
+            onClick={toggleTheme}
+            className="theme-toggle"
             aria-label="Toggle Theme"
           >
             {theme === 'dark' ? (

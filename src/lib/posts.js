@@ -95,3 +95,77 @@ export function getAllPosts() {
     .sort((post1, post2) => (post2.date && post1.date ? post2.date.localeCompare(post1.date) : 0));
   return posts;
 }
+
+export function getRelatedPosts(currentPost, allPosts, limit = 6) {
+  return allPosts
+    .filter(p => p.slug !== currentPost.slug)
+    .map(p => {
+      let score = 0;
+      if (currentPost.categories && p.categories) {
+        currentPost.categories.forEach(c => {
+          if (p.categories.includes(c)) score += 3;
+        });
+      }
+      if (currentPost.tags && p.tags) {
+        currentPost.tags.forEach(t => {
+          if (p.tags.includes(t)) score += 1;
+        });
+      }
+      return { post: p, score };
+    })
+    .filter(item => item.score > 0)
+    .sort((a, b) => b.score - a.score)
+    .slice(0, limit)
+    .map(item => item.post);
+}
+
+export function getCategoryPosts(currentPost, allPosts, limit = 4) {
+  const primaryCategory = currentPost.categories?.[0];
+  if (!primaryCategory) return [];
+
+  const relatedSlugs = new Set(
+    getRelatedPosts(currentPost, allPosts, 6).map(p => p.slug)
+  );
+
+  return allPosts
+    .filter(
+      p =>
+        p.slug !== currentPost.slug &&
+        !relatedSlugs.has(p.slug) &&
+        p.categories?.includes(primaryCategory)
+    )
+    .slice(0, limit);
+}
+
+export function getPopularTagsInCategory(posts, limit = 10) {
+  const tagCounts = {};
+  posts.forEach(post => {
+    if (post.tags) {
+      post.tags.forEach(tag => {
+        tagCounts[tag] = (tagCounts[tag] || 0) + 1;
+      });
+    }
+  });
+
+  return Object.entries(tagCounts)
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, limit)
+    .map(([tag, count]) => ({ tag, count }));
+}
+
+export function getTagsWithCounts() {
+  const posts = getAllPosts();
+  const tagCounts = {};
+
+  posts.forEach(post => {
+    if (post.tags) {
+      post.tags.forEach(tag => {
+        tagCounts[tag] = (tagCounts[tag] || 0) + 1;
+      });
+    }
+  });
+
+  return Object.entries(tagCounts)
+    .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0], 'ru'))
+    .map(([tag, count]) => ({ tag, count }));
+}

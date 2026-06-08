@@ -1,5 +1,8 @@
-import { getAllPosts } from '@/lib/posts';
+import { getAllPosts, getPopularTagsInCategory } from '@/lib/posts';
+import { getCategoryHub } from '@/lib/categories';
 import Link from 'next/link';
+import Breadcrumb from '@/components/Breadcrumb';
+import PostCard from '@/components/PostCard';
 
 export async function generateStaticParams() {
   const posts = getAllPosts();
@@ -18,9 +21,17 @@ export async function generateStaticParams() {
 export async function generateMetadata({ params }) {
   const { category } = await params;
   const decodedCategory = decodeURIComponent(category);
+  const hub = getCategoryHub(decodedCategory);
   return {
-    title: `Категория: ${decodedCategory} - EduPortal`,
-    description: `Все публикации в категории "${decodedCategory}" на образовательном портале.`,
+    title: decodedCategory,
+    description: hub.description.substring(0, 160),
+    alternates: {
+      canonical: `/categories/${encodeURIComponent(decodedCategory)}`,
+    },
+    openGraph: {
+      title: `${decodedCategory} — статьи об образовании`,
+      description: hub.description.substring(0, 160),
+    },
   };
 }
 
@@ -28,56 +39,74 @@ export default async function CategoryPage({ params }) {
   const { category } = await params;
   const decodedCategory = decodeURIComponent(category);
   const allPosts = getAllPosts();
+  const hub = getCategoryHub(decodedCategory);
 
-  const filteredPosts = allPosts.filter(post => 
+  const filteredPosts = allPosts.filter(post =>
     post.categories && post.categories.includes(decodedCategory)
   );
 
+  const popularTags = getPopularTagsInCategory(filteredPosts, 10);
+
   return (
-    <div className="app-container" style={{ padding: '3rem 1.5rem' }}>
-      <header style={{ marginBottom: '3rem', textAlign: 'center' }}>
-        <h1 style={{ fontSize: '2.5rem', marginBottom: '0.5rem' }}>
-          Категория: <span style={{ color: 'var(--primary)' }}>{decodedCategory}</span>
+    <div className="app-container" style={{ padding: '2rem 1.5rem 3rem' }}>
+      <Breadcrumb
+        items={[
+          { label: 'Главная', href: '/' },
+          { label: decodedCategory },
+        ]}
+      />
+
+      <header className="hub-header">
+        <h1 className="hub-title">
+          {decodedCategory}
         </h1>
-        <p style={{ color: 'var(--text-secondary)' }}>
+        <p className="hub-description">{hub.description}</p>
+        <p className="hub-count">
           Найдено публикаций: {filteredPosts.length}
         </p>
       </header>
 
+      {hub.related.length > 0 && (
+        <section className="hub-links-section">
+          <h2 className="hub-links-title">Связанные разделы</h2>
+          <div className="hub-links-row">
+            {hub.related.map(related => (
+              <Link
+                key={related}
+                href={`/categories/${encodeURIComponent(related)}`}
+                className="category-chip"
+              >
+                {related}
+              </Link>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {popularTags.length > 0 && (
+        <section className="hub-links-section">
+          <h2 className="hub-links-title">Популярные теги в разделе</h2>
+          <div className="hub-links-row">
+            {popularTags.map(({ tag, count }) => (
+              <Link
+                key={tag}
+                href={`/tags/${encodeURIComponent(tag)}`}
+                className="tag-badge"
+              >
+                #{tag} ({count})
+              </Link>
+            ))}
+          </div>
+          <p className="hub-tags-more">
+            <Link href="/tags">Все теги портала →</Link>
+          </p>
+        </section>
+      )}
+
       {filteredPosts.length > 0 ? (
         <div className="posts-grid">
           {filteredPosts.map(post => (
-            <article key={post.slug} className="post-card">
-              <Link href={`/posts/${post.slug}`} style={{ display: 'block', height: '100%' }}>
-                <div className="card-image-wrapper">
-                  {post.image ? (
-                    <img 
-                      src={post.image} 
-                      alt={post.title} 
-                      className="card-image"
-                      loading="lazy"
-                    />
-                  ) : (
-                    <div className="card-image" style={{ background: 'linear-gradient(135deg, #1e1b4b, #311042)', height: '100%' }}></div>
-                  )}
-                </div>
-                <div className="card-content">
-                  <div className="card-meta">
-                    <span className="card-category">
-                      {post.categories && post.categories[0] ? post.categories[0] : 'Общее'}
-                    </span>
-                    <span>•</span>
-                    <span>{post.date ? post.date.substring(0, 10) : ''}</span>
-                  </div>
-                  <h3 className="card-title">{post.title}</h3>
-                  <div className="card-tags">
-                    {post.tags && post.tags.slice(0, 3).map(tag => (
-                      <span key={tag} className="tag-badge">#{tag}</span>
-                    ))}
-                  </div>
-                </div>
-              </Link>
-            </article>
+            <PostCard key={post.slug} post={post} />
           ))}
         </div>
       ) : (

@@ -18,8 +18,31 @@ const plusJakartaSans = Plus_Jakarta_Sans({
 });
 
 export const metadata = {
-  title: 'ИпЛекс - Образовательный Портал Узбекистана',
+  metadataBase: new URL('https://iplex.uz'),
+  title: {
+    default: 'ИпЛекс — Образовательный Портал Узбекистана',
+    template: '%s | ИпЛекс',
+  },
   description: 'Актуальные новости образования, вузов, школ, полезные материалы для абитуриентов, студентов и учителей в Узбекистане.',
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: { index: true, follow: true },
+  },
+  alternates: {
+    canonical: '/',
+    types: {
+      'text/plain': [{ url: '/llms.txt', title: 'LLM Site Information' }],
+    },
+  },
+  openGraph: {
+    type: 'website',
+    locale: 'ru_RU',
+    siteName: 'ИпЛекс',
+    title: 'ИпЛекс — Образовательный Портал Узбекистана',
+    description: 'Актуальные новости образования, вузов, школ, полезные материалы для абитуриентов, студентов и учителей в Узбекистане.',
+    url: 'https://iplex.uz',
+  },
 };
 
 export default function RootLayout({ children }) {
@@ -50,12 +73,18 @@ export default function RootLayout({ children }) {
                 <Link href={`/categories/${encodeURIComponent('Наука')}`}>Наука</Link>
                 <Link href={`/categories/${encodeURIComponent('Аттестация')}`}>Аттестация</Link>
                 <Link href={`/categories/${encodeURIComponent('Национальный сертификат')}`}>Нац. сертификат</Link>
+                <Link href="/tags">Все теги</Link>
               </div>
             </div>
           </div>
           <div className="footer-bottom">
             <div className="app-container">
               <p>&copy; {new Date().getFullYear()} ИпЛекс. Все права защищены. Экспертные материалы об образовании.</p>
+              <p style={{ marginTop: '0.5rem', fontSize: '0.8rem', opacity: 0.7 }}>
+                <a href="/llms.txt" type="text/plain">llms.txt</a>
+                {' · '}
+                <a href="/llms-full.txt" type="text/plain">llms-full.txt</a>
+              </p>
             </div>
           </div>
         </footer>
