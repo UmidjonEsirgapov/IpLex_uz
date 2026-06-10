@@ -1,5 +1,6 @@
 import './globals.css';
 import Header from '@/components/Header';
+import WwwUzCounter from '@/components/WwwUzCounter';
 import Link from 'next/link';
 import { slugifyPathSegment } from '@/lib/urlSlugs';
 import { Outfit, Plus_Jakarta_Sans } from 'next/font/google';
@@ -88,6 +89,9 @@ export default function RootLayout({ children }) {
             </div>
           </div>
         </footer>
+        {/* START WWW.UZ TOP-RATING */}
+        <WwwUzCounter />
+        {/* FINISH WWW.UZ TOP-RATING */}
       </body>
     </html>
   );
